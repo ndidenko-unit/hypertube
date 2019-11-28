@@ -1,0 +1,77 @@
+<% query = params[:term] %><br>
+<% $increment = 0 %>
+<% if query.nil? %>
+<form method="get" action="<% link_to movies_path %>" class="form-inline">
+<div class="row" style="margin-bottom: 10px;">
+		<div class="col-xs-3">
+    	<div class="form-group">
+		<button class="btn btn-primary" disabled style="margin-left: 14px;"><%= t('quality') %></button>
+		<select name="quality" class="custom-select">
+			<option value="720p" <% if @quality == "720p" %> selected <%end%> >720p</option>
+			<option value="1080p" <% if @quality == "1080p" %> selected <%end%> >1080p</option>
+		</select>
+		</div>
+		</div>
+		<div class="col-xs-3">
+    	<div class="form-group">
+		<button class="btn btn-primary" disabled style="margin-left: 14px;"><%= t('rating') %></button>
+		<select name="minimum_rating" class="custom-select">
+			<option value="9" <% if @minimum_rating == "9" %> selected <% end %> >9+</option>
+			<option value="8" <% if @minimum_rating == "8" %> selected <% end %> >8+</option>
+			<option value="7" <% if @minimum_rating == "7" %> selected <% end %> >7+</option>
+			<option value="6" <% if @minimum_rating == "6" %> selected <% end %> >6+</option>
+			<option value="5" <% if @minimum_rating == "5" %> selected <% end %> >5+</option>
+			<option value="4" <% if @minimum_rating == "4" %> selected <% end %> >4+</option>
+			<option value="3" <% if @minimum_rating == "3" %> selected <% end %> >3+</option>
+			<option value="2" <% if @minimum_rating == "2" %> selected <% end %> >2+</option>
+			<option value="1" <% if @minimum_rating == "1" %> selected <% end %> >1+</option>
+		</select>
+		</div>
+		</div>
+		<div class="col-xs-3">
+    	<div class="form-group">
+		<button class="btn btn-primary" disabled style="margin-left: 14px;"><%= t('sort') %></button>
+		<select name="sort_by" class="custom-select">
+			<option <% if @sort_by == "date_added_lastest" %> selected <% end %> value="date_added_lastest" ><%= t('latestadd') %></option>
+			<option <% if @sort_by == "date_added_oldest" %> selected <% end %> value="date_added_oldest"><%= t('oldestadd') %></option>
+			<option <% if @sort_by == "seeds" %> selected <% end %> value="seeds"><%= t('seeds') %></option>
+			<option <% if @sort_by == "peers" %> selected <% end %> value="peers"><%= t('peers') %></option>
+			<option <% if @sort_by == "year_lastest" %> selected <% end %> value="year_lastest"><%= t('latestmovies') %></option>
+			<option <% if @sort_by == "year_oldest" %> selected <% end %> value="year_oldest"><%= t('oldestmovies') %></option>
+			<option <% if @sort_by == "rating" %> selected <% end %> value="rating"><%= t('rating') %></option>
+			<option <% if @sort_by == "title" %> selected <% end %> value="title"><%= t('title') %></option>
+		</select>
+		</div>
+		</div>
+		<div class="col-xs-3">
+		<button class="btn btn-success"><%= t('submit') %></button>	
+		</div>
+	</div>
+</form>
+<% end %>
+<div style="margin-bottom: 10px;">
+<%= form_tag(movies_path, method: :get, class: "form-inline") do %>
+	<button class="btn btn-primary" disabled><%= t('movies') %></button>
+	<%= text_field_tag :term, nil, class: "form-control", style: "width: 25%;" %>
+	<%= submit_tag t('search'), class: "btn btn-success" %>
+<% end %>
+</div>
+<div class="container" id="moviesGallery">
+	<div class="row" id="content">
+		<% if @movies.empty?%>
+			<h1>No results ...</h1>
+		<% else %>
+			<%= render partial: 'movie', collection: @movies %>
+		<% end %>
+	</div>
+</div>
+
+<input type="hidden" id="currentPage" value="<%= @current_page %>" />
+<input type="hidden" id="totalPages" value="<%= @total_pages %>" />
+
+<% unless @current_page.to_i == @total_pages.to_i %>
+	<p id="view-more">
+		<%= link_to(t('viewmore'), url_for(page: @current_page.to_i + 1, minimum_rating: params[:minimum_rating], sort_by: params[:sort_by], quality: params[:quality]), class: 'btn btn-primary', remote: true) %>
+		<i id="load"></i>
+	</p>
+<% end %>

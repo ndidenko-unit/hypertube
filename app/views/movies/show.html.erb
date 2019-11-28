@@ -1,0 +1,144 @@
+<link href="http://vjs.zencdn.net/5.16.0/video-js.css" rel="stylesheet">
+
+<h1 style="text-align: center;"><%= @torrent['title'] %></h1>
+<div class="video_content">
+	<video class="video-js vjs-default-skin mejs__player" id="video" width="480" height="270" controls>
+		<source src="/videos/<%= @video.id %>/playlist.m3u8" type="application/x-mpegURL">
+		<% @translates.each do |translate| %>
+			<track src="/videos/<%= @video.id %>/<%= translate.path %>" kind="subtitles" srclang="<%= translate.label %>" label="<%= translate.label %>">
+		<% end %>
+	</video>
+</div>
+</br>
+</br>
+<button type="button" class="btn btn-secondary">
+	<a href="#" class="thumbnail" data-toggle="modal" data-target="#info">
+		<%= t('showinformation')%>
+	</a>
+</button>
+</br>
+</br>
+</br>
+</br>
+<table>
+
+<h2><%= t('comments') %></h2>
+
+<ul class ="list-unstyled" id="body_comment">
+	<% @video.comments.each do |comment| %>
+		<li class="media">
+			<% if comment.user.avatar? %>
+					<% src = comment.user.avatar %>
+					<% alt = 'avatar' %>
+				<% else %>
+					<% src = comment.user.imageOauthUrl %>
+					<% alt = 'avatar_Oauth' %>
+				<% end %>
+			<img class="d-flex mr-3" src="<%= src %>" alt="<%= alt %>" style="width: 64px; height: 64px;">
+			<div class="media-body">
+				<h5 class="mt-0"><%= link_to(comment.user.login, userprofil_path(comment.user.login)) %>, <%= comment.created_at.strftime("%d-%m-%Y %H:%M") %></h5>
+					<%= comment.content %>
+			</div>
+		</li>
+		<hr>
+	<% end %>
+</ul>
+
+</table>
+<div id="new_comment">
+	<%= form_for(:comment, :url => new_comment_path(format: :json), remote: true) do |f| %>
+		<%= f.hidden_field :id, value: @video.id %>
+		<%= f.text_area :content, placeholder: t('comments_placeholder'), class: 'form-control text' %>
+		<%= f.submit t("comment_button"), class: 'btn btn-default' %>
+	<% end %>
+</div>
+		<div class="modal fade" id="info" role="dialog">
+	    <div class="modal-dialog" style="min-width: 80%;">
+	    <!-- Modal content-->
+	      <div class="modal-content">
+	        <div class="modal-header">
+	          <button type="button" class="close" data-dismiss="modal">&times;</button>
+	          <h4 class="modal-title"><%=  @torrent['title'] %></h4>
+	        </div>
+	        <div class="modal-body">
+	          <p><img src="<%=  @torrent['medium_cover_image'] %>" class="img-thumbnail" style="min-height: 299px; max-height: 336px;"></p>
+	          <p><strong><%= t('year') %> : </strong><%=  @torrent['year'].to_s %></p>
+	          <p><strong><%= t('rating') %> : </strong><%=  @torrent['rating'].to_s %></p>
+	          <p><%= t('a_movie_by') %> <strong><%= @torrent['writers'].to_sentence(last_word_connector: t('last_word_connector')) %></strong> <%= t('from') %> <%= @torrent['year'] %>.</p>
+				<p><strong><%= t('starring') %>:</strong> <%= @torrent['cast_members'].to_sentence(last_word_connector: t('last_word_connector')) %>.</p>
+	          <%# if movie['runtime'] %>
+	          	<%# runtime = Time.at(movie['runtime'] * 60).utc.strftime("%-lh%M") %>
+	          	<!-- <p><strong><%#= t('duration') %> : </strong><%#= runtime.to_s %></p> -->
+	          <%# end %>
+	          <% if  @torrent['genres'] %>
+	         	 	<p><strong><%= t('kind') %> : </strong><%=  @torrent['genres'].to_sentence %></p>
+	          <% end %>
+	          <p><strong><%= t('description') %> : </strong><%=  @torrent['description_full'] %></p>
+	        </div>
+	        <div class="modal-footer">
+	          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+	        </div>
+	      </div>
+	    </div>
+	    </div>
+<script src="http://vjs.zencdn.net/5.16.0/video.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/videojs-contrib-hls/5.2.1/videojs-contrib-hls.js"></script>
+<script>
+	$.ajax({
+	    url: "/videos/<%= @video.id %>/playlist.m3u8",
+	    type:'HEAD',
+	    error: function()
+	    {
+	        location.reload();
+	    },
+	    success: function()
+	    {
+	    }
+	});
+	function escapeHtml(unsafe) {
+		return unsafe
+			.replace(/&/g, "&amp;")
+			.replace(/</g, "&lt;")
+			.replace(/>/g, "&gt;")
+			.replace(/"/g, "&quot;")
+			.replace(/'/g, "&#039;");
+	}
+
+	$(document).ready(function () {
+		if (window.chrome) {
+			$('#video').mediaelementplayer({
+				success: function (media) {
+					$(media).closest('.media-wrapper').children('div:first').attr('lang', mejs.i18n.language());
+					var renderer = $('#' + media.id + '-rendername');
+					media.addEventListener('error', function (e) {
+						renderer.find('.error').html('<strong>Error</strong>: ' + e.message);
+					}, false);
+				}
+			});
+		}
+		else {
+			videojs.options.flash.swf = "https://cdnjs.cloudflare.com/ajax/libs/videojs-swf/5.2.0/video-js.swf";
+			videojs('video');
+		}
+
+		$('#new_comment > form').on('ajax:success', function(e, data, status, xhr) {
+			console.log($('#body_comment li').length);
+			if ('<%= current_user.avatar %>') {
+				src = '<%= current_user.avatar %>';
+				alt = 'avatar';
+			}
+			else {
+				src = '<%= current_user.imageOauthUrl %>';
+				alt = 'avatar_Oauth';
+			}
+			$('#body_comment').append('<li class="media"><img class="d-flex mr-3" src="'+src+'" alt="'+alt+'" style="width: 64px; height: 64px;">'+'<div class="media-body">' + '<h5 class="mt-0"><%= link_to(current_user.login, userprofil_path(current_user.login)) %>, A few seconds ago</h5>'+ escapeHtml(data.comment) + '</div></li><hr>');
+			$("#new_comment > form")[0].reset();
+			return false;
+		});
+	});
+
+	$( window ).ready(function() {
+		$('#mep_0').css("margin-left", "auto");
+		$('#mep_0').css("margin-right", "auto");
+	});
+</script>

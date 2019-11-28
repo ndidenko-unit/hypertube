@@ -1,0 +1,70 @@
+# Files in the config/locales directory are used for internationalization
+# and are automatically loaded by Rails. If you want to use locales other
+# than English, add the necessary files in this directory.
+#
+# To use the locales, use `I18n.t`:
+#
+#     I18n.t 'hello'
+#
+# In views, this is aliased to just `t`:
+#
+#     <%= t('hello') %>
+#
+# To use a different locale, set it with `I18n.locale`:
+#
+#     I18n.locale = :es
+#
+# This would use the information in config/locales/es.yml.
+#
+# To learn more, please read the Rails Internationalization guide
+# available at http://guides.rubyonrails.org/i18n.html.
+
+en:
+  hello: "Hello"
+  signup: "Sign up "
+  login: "Login "
+  signin: "Sign in with "
+  langueEn: "English"
+  langueFr: "French"
+  firstname: "Firstname"
+  lastname: "Lastname"
+  editprofil: "Edit profil"
+  logout: "Logout"
+  loggedin: "Logged in as "
+  rememberme: "Remember me"
+  user: "Users"
+  movies: "Movies"
+  search: "Search"
+  quality: "Quality"
+  rating: "Rating"
+  ratingimdb: "Imdb Rating"
+  sort: "Sort by"
+  submit: "Submit"
+  watchmovie: "Watch movie"
+  latestadd: "Lastest added"
+  oldestadd: "Oldest added"
+  seeds: "Seeds"
+  peers: "Peers"
+  latestmovies: "Lastest movies"
+  oldestmovies: "Oldest movies"
+  title: "Title"
+  year: "Year"
+  duration: "Duration"
+  size: "Size"
+  kind: "Kind"
+  description: "Description"
+  visit: "Show profile"
+  name: "Name"
+  profilpictures: "Profil pictures"
+  a_movie_by: "A mobie by"
+  from: "from"
+  last_word_connector: " and "
+  starring: "Starring"
+  comments: "Comments"
+  comments_placeholder: "Your comment here"
+  comment_button: "Comment"
+  profile: "Profile"
+  settings: "Settings"
+  viewmore: "View more"
+  dejavu: "Already watched"
+  showinformation: "See movie info"

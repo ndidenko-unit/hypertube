@@ -1,0 +1,94 @@
+<% if movie %>
+	<%#= movie['torrents'] %>
+	<% if movie['torrents'] && movie['torrents'][2] %>
+		<% if @quality == "720p" %>
+	    	<% qualitymovies = 1 %>
+		<% else %>
+			<% qualitymovies = 2 %>
+		<% end %>
+	<% else %>
+		<% if @quality == "720p" %>
+	    	<% qualitymovies = 0 %>
+		<% else %>
+			<% qualitymovies = 1 %>
+		<% end %>
+	<% end %>
+	<div class="col-xs-6 col-md-3">
+		<% myModal = 'myModal' + $increment.to_s %>
+		<a href="#" class="thumbnail" data-toggle="modal" data-target="#<%= myModal %>">
+			<p><img src="<%= movie['medium_cover_image'] %>" class="img-thumbnail" style="min-height: 299px; max-height: 336px;"></p>
+		</a>
+		<% if movie['view'] %>
+			<div style="color: green;"><%= t('dejavu')%></div>
+		<% end %>
+		<% if movie['torrents'] && movie['torrents'][qualitymovies] %>
+			<% torrents = movie['torrents'][qualitymovies] %>
+			<% if movie['title'] && movie['year'] && movie['rating'] && torrents['seeds'] && torrents['peers'] %>
+				<p><%= movie['title'] + ' (' + movie['year'].to_s + ')' %></p>
+				<p><%= t('ratingimdb') + ' : ' + movie['rating'].to_s %></p>
+			<% end %>
+		<% else %>
+			<p><%= movie['title'] + ' (' + movie['year'].to_s + ')' %></p>
+			<p><%= t('ratingimdb') + ' : ' + movie['rating'].to_s %></p>
+
+		<% end %>
+		<% if movie['languages'] %>
+			<%= form_tag("/movie/new", method: "post") do %>
+				<% languages = []
+					movie['languages'].each_with_index do |l, i|
+						languages.push([l[:language], l[:magnet_link]])
+					end %>
+				<%= hidden_field_tag 'imdb', movie['imdb'] %>
+				<%= select_tag(:magnet_link, options_for_select(languages)) %>
+				<%= submit_tag(t("watchmovie")) %>
+			<% end %>
+		<% else %>
+			<% if movie['torrents'][qualitymovies].nil? %>
+				<% qualitymovies = 0 %>
+			<% end %>
+			<% if movie['torrents'] %>
+				<%= form_tag("/movie/new", method: "post") do %>
+					<%= hidden_field_tag 'imdb', movie['imdb_code'] %>
+					<%= hidden_field_tag 'torrent', movie['torrents'][qualitymovies]['url'] %>
+					<%= hidden_field_tag 'quality', @quality %>
+					<%= submit_tag(t("watchmovie")) %>
+				<% end %>
+			<% end %>
+		<% end %>
+		<br>
+		<div class="modal fade" id="<%= myModal %>" role="dialog">
+	    <div class="modal-dialog" style="min-width: 80%;">
+	    <!-- Modal content-->
+	      <div class="modal-content">
+	        <div class="modal-header">
+	          <button type="button" class="close" data-dismiss="modal">&times;</button>
+	          <h4 class="modal-title"><%= movie['title'] %></h4>
+	        </div>
+	        <div class="modal-body">
+	          <p><img src="<%= movie['medium_cover_image'] %>" class="img-thumbnail" style="min-height: 299px; max-height: 336px;"></p>
+	          <p><strong><%= t('year') %> : </strong><%= movie['year'].to_s %></p>
+	          <p><strong><%= t('rating') %> : </strong><%= movie['rating'].to_s %></p>
+	          <% if movie['runtime'] %>
+	          	<% runtime = Time.at(movie['runtime'] * 60).utc.strftime("%-lh%M") %>
+	          	<p><strong><%= t('duration') %> : </strong><%= runtime.to_s %></p>
+	          <% end %>
+	          	<% if movie['torrents'] && movie['torrents'][qualitymovies] %>
+		          <% torrents = movie['torrents'][qualitymovies] %>
+		          <p><strong style="color: green;">Seeds : </strong><%= torrents['seeds'].to_s %></p>
+		          <p><strong style="color: red;">Peers : </strong><%= torrents['peers'].to_s %></p>
+		          <p><strong><%= t('size') %> : </strong><%= torrents['size'].to_s %></p>
+	          <% end %>
+	          <% if movie['genres'] %>
+	         	 	<p><strong><%= t('kind') %> : </strong><%= movie['genres'].to_sentence %></p>
+	          <% end %>
+	          <p><strong><%= t('description') %> : </strong><%= movie['description_full'] %></p>
+	        </div>
+	        <div class="modal-footer">
+	          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+	        </div>
+	      </div>
+	    </div>
+	    </div>
+	    <% $increment += 1 %>
+	</div>
+<% end %>

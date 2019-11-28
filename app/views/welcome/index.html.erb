@@ -1,0 +1,40 @@
+<div id="container">
+<p class="btn btn-info"><%= link_to_unless I18n.locale == :en, t('langueEn'), locale: :en %></p>
+<p class="btn btn-info"><%= link_to_unless I18n.locale == :fr, t('langueFr'), locale: :fr %></p>
+</p>
+<h1>Hyper Tube !</h1>
+<% if user_signed_in? %>
+  <%= t('loggedin') %><strong><%= current_user.email %></strong>.<br />
+  <%= link_to t('editprofil'), edit_user_registration_path, :class => 'btn btn-danger', :id => 'logout' %>
+  <%= link_to t('logout'), destroy_user_session_path, method: :delete,:class => 'btn btn-danger', :id => 'logout' %>
+<% else %>
+  <div id="login">
+    <a href="<%= new_user_registration_path %>">
+      <button id="login" type="button" class="btn btn-success"><%= t :signup %></button>
+    </a>
+    <a href="<%= new_user_session_path %>">
+     <button id="login1" type="button" class="btn btn-warning"><%= t :login %></button>
+    </a>
+  </div>
+<% end %>
+<% if  current_user %>
+	<% if current_user.avatar? %>
+		<center><%= image_tag current_user.avatar, :class => "style_image" %></center>
+	<% else %>
+		<center><%= image_tag current_user.imageOauthUrl, :class => "style_image" %></center>
+	<% end %>
+<% end %>
+</div>
+<div id="oauth">
+<% unless current_user %>
+  <a class="btn btn-block btn-social btn-facebook" href="<%= user_facebook_omniauth_authorize_path %>">
+    <span class="fa fa-facebook"></span> <%= t :signin %> Facebook
+  </a>
+  <a class="btn btn-block btn-social btn-github" href="<%= user_marvin_omniauth_authorize_path %>">
+    <span><img src=<%= image_url('42logo.svg') %>/ style="width: 80%; height: 80%"></span> <%= t :signin %> 42
+  </a>
+  <a class="btn btn-block btn-social btn-twitter" href="<%= user_twitter_omniauth_authorize_path %>">
+    <span class="fa fa-twitter"></span> <%= t :signin %> Twitter
+  </a>
+<% end %>
+</div>

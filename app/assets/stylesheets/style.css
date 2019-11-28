@@ -1,0 +1,76 @@
+/* Sticky footer styles
+-------------------------------------------------- */
+html {
+  position: relative;
+  min-height: 100%;
+}
+body {
+  /* Margin bottom by footer height */
+  margin-bottom: 60px;
+}
+.footer {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  /* Set the fixed height of the footer here */
+  height: 60px;
+  line-height: 60px; /* Vertically center the text there */
+  background-color: #f5f5f5;
+}
+
+
+/* Custom page CSS
+-------------------------------------------------- */
+/* Not required for template or sticky footer method. */
+
+body > .container {
+  padding: 60px 15px 0;
+}
+
+.footer > .container {
+  padding-right: 15px;
+  padding-left: 15px;
+}
+
+code {
+  font-size: 80%;
+}
+
+#container {
+	width: 50%;
+	margin: 0 auto;
+	text-align: center
+}
+
+.style_image {
+	width: 200px;
+}
+
+#oauth {
+	width: 400px;
+	margin: 0 auto;
+	text-align: center
+}
+
+#login {
+	width: 400px;
+	margin: 0 auto;
+	margin-bottom: 5px;	
+	text-align: center
+}
+
+#login1 {
+	width: 400px;
+	margin: 0 auto;
+	text-align: center
+}
+
+#logout {
+	margin-top: 5px;
+	margin-bottom: 5px;
+}
+.video_content {
+	max-width: 896px;
+	max-height: 504px;
+	margin: 0 auto;
+}
